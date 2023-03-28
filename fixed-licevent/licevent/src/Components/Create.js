@@ -1,7 +1,12 @@
+import Terraform from "./Terraform";
+
 function Create(){
-return (<div>
+return (
+<>
     Here will be the create a new website button.
-</div>)
+    <Terraform/>
+</>
+)
 }
 
 export default Create;

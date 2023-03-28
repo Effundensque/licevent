@@ -26,6 +26,30 @@ app.get('/sync', async (req, res, next) => {
 })
 
 
+// REST for Terraform
+app.post('/terraform', async (req, res, next) => {
+  const { terraformCode } = req.body
+
+  try {
+    // create a temporary directory to store the Terraform configuration file
+    const tempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'terraform-'))
+
+    // write the Terraform configuration file to the temporary directory
+    const configFile = path.join(tempDir, 'terraform.tf')
+    await fs.promises.writeFile(configFile, terraformCode)
+
+    // initialize the Terraform working directory
+    const tfInit = await execa('terraform', ['init'], { cwd: tempDir })
+
+    // execute the Terraform command to apply the configuration
+    const tfApply = await execa('terraform', ['apply', '-auto-approve'], { cwd: tempDir })
+
+    res.status(200).json({ message: 'Terraform command executed successfully.' })
+  } catch (err) {
+    next(err)
+  }
+})
+
 //REST for Users
 
   
