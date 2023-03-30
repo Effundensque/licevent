@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
+// import execa from 'execa'
 
 function Terraform() {
-    
+  const SERVER = 'http://localhost:8080'
   const [terraformCode, setTerraformCode] = useState('')
 
   const handleSubmit = async (event) => {
     event.preventDefault()
 
     try {
-      const response = await fetch('http://localhost:3000/terraform', {
+      const response = await fetch(`${SERVER}/terraform`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -21,6 +22,8 @@ function Terraform() {
     } catch (err) {
       console.error(err)
     }
+  // const {stdout} = await execa('echo', ['unicorns']);
+  // console.log(stdout);
   }
 
   return (

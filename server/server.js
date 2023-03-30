@@ -1,13 +1,34 @@
-const express = require('express')
+import express from 'express'
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+import { execa } from 'execa';
+// const express = require('express')
 const cors = require('cors')
-
-
-const sequelize = require('./db')
-
-const User = require('./models/users')
-const Website = require('./models/websites')
+const path = require('path')
+const os = require('os')
+const fs = require('fs')
 const { Op } = require('sequelize')
 const crypto = require('crypto')
+
+
+const sequelize = require('./db.cjs')
+const User = require('./models/users.cjs')
+const Website = require('./models/websites.cjs')
+
+
+
+
+// import express from 'express';
+// import cors from 'cors';
+// import path from 'path';
+// import os from 'os';
+// import fs from 'fs';
+// import { execa } from 'execa';
+// import sequelize from './db.js';
+// import User from './models/users.js';
+// import Website from './models/websites.js';
+// import { Op } from 'sequelize';
+// import crypto from 'crypto';
 
 User.hasMany(Website)
 
@@ -28,9 +49,11 @@ app.get('/sync', async (req, res, next) => {
 
 // REST for Terraform
 app.post('/terraform', async (req, res, next) => {
-  const { terraformCode } = req.body
-
+  const { terraformCode } = req.body;
+  console.warn("Terraform code: " + terraformCode);
   try {
+    const {stdout} = await execa('echo', ["Pula"])
+    console.warn({stdout})
     // create a temporary directory to store the Terraform configuration file
     const tempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'terraform-'))
 
@@ -46,9 +69,12 @@ app.post('/terraform', async (req, res, next) => {
 
     res.status(200).json({ message: 'Terraform command executed successfully.' })
   } catch (err) {
-    next(err)
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error' });
   }
-})
+});
+
+
 
 //REST for Users
 
