@@ -52,8 +52,6 @@ app.post('/terraform', async (req, res, next) => {
   const { terraformCode } = req.body;
   console.warn("Terraform code: " + terraformCode);
   try {
-    const {stdout} = await execa('echo', ["Pula"])
-    console.warn({stdout})
     // create a temporary directory to store the Terraform configuration file
     const tempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'terraform-'))
 
