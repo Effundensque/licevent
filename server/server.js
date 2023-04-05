@@ -72,6 +72,15 @@ app.post('/terraform', async (req, res, next) => {
   }
 });
 
+app.get('/terraform', async (req, res, next) => {
+  try {
+    const fileData = fs.readFileSync('./Terraform/terraformCode.txt', 'utf8')
+    res.status(200).send(fileData)
+  } catch (err) {
+    next(err)
+  }
+})
+
 
 
 //REST for Users

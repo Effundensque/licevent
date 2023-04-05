@@ -1,41 +1,37 @@
 import React, { useState } from 'react'
-// import execa from 'execa'
 
 function Terraform() {
   const SERVER = 'http://localhost:8080'
-  const [terraformCode, setTerraformCode] = useState('')
+
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
-
+    event.preventDefault();
+  
     try {
-      const response = await fetch(`${SERVER}/terraform`, {
+      const fileResponse = await fetch(`${SERVER}/terraform`,{method:'GET'});
+      const fileData = await fileResponse.text();
+
+      // Make a POST request to your /terraform endpoint to send the file contents
+      const response2 = await fetch(`${SERVER}/terraform`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ terraformCode })
-      })
-
-      const data = await response.json()
+        body: JSON.stringify({ terraformCode: fileData })
+      });
+  
+      const data = await response2.json()
       console.log(data)
     } catch (err) {
       console.error(err)
     }
-  // const {stdout} = await execa('echo', ['unicorns']);
-  // console.log(stdout);
   }
+  
 
   return (
     <div>
       <h1>Execute Terraform Command</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Terraform Code:
-          <textarea value={terraformCode} onChange={event => setTerraformCode(event.target.value)} />
-        </label>
-        <button type="submit">Execute</button>
-      </form>
+        <button type="submit" onClick={handleSubmit}>Execute</button>
     </div>
   )
 }
